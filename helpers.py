@@ -1,4 +1,4 @@
-import jwt
+import jwt, os
 import logging
 import boto3
 from secrets import SECRET_KEY
@@ -27,6 +27,13 @@ def uploadToS3(file_name, user_name, bucket=BUCKET_NAME):
     except ClientError as e:
         logging.error(e)
         return False
+    return True
+
+
+def downloadFromS3(object_name, file_name=os.getcwd()+'/temp/', bucket=BUCKET_NAME):
+    s3 = boto3.client('s3')
+    with open(file_name+object_name.split('/')[-1], 'wb') as f:
+        s3.download_fileobj(BUCKET_NAME, object_name, f)
     return True
 
 
